@@ -23,7 +23,7 @@ public class Producto implements Serializable{
 	private String nombre;
 	private Double precio;
 	@Column(name = "fecha_creacion")
-	@Temporal(TemporalType.DATE)
+	//Nuevos valores de Java8 en adelante
 	private LocalDate fechaCreacion;
 
 	public Long getId() {
