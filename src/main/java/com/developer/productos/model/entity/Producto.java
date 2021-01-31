@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "productos")
@@ -25,6 +26,11 @@ public class Producto implements Serializable{
 	@Column(name = "fecha_creacion")
 	//Nuevos valores de Java8 en adelante
 	private LocalDate fechaCreacion;
+	
+	//Indico con este atributo que no hace referencia a un atributo en base de datos
+	//para no generar error en solicitudes.
+	@Transient
+	private Integer port;
 
 	public Long getId() {
 		return id;
@@ -58,5 +64,15 @@ public class Producto implements Serializable{
 		this.fechaCreacion = fechaCreacion;
 	}
 	
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+
+
 	private static final long serialVersionUID = -5843754776909605834L;
 }

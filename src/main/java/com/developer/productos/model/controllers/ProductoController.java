@@ -1,8 +1,11 @@
 package com.developer.productos.model.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,24 +26,42 @@ import com.developer.productos.model.service.IProductoService;
 // indicando que es controller
 
 @RestController
-@RequestMapping("/api/producto")
+//@RequestMapping("/api/producto")
 public class ProductoController {
 	
+	//ribbon tiene algo llamado round robin, que ayuda a seleccionar el balanceo de carga
+	// si son igual de buenas se van alternando
+	//Primer metodo para manejar valores de .propertis
+	@Autowired
+	private Environment env;
+	
+	//Segundo metodo para manejar valores de .propertis
+	@Value("${server.port}")
+	private Integer port;
+	
+	@Autowired
 	private IProductoService productoService;
 
-	@Autowired
-	public ProductoController(IProductoService productoService) {
-		this.productoService = productoService;
-	}
+	
+	
 	
 	//Creamos una estructura de endpoint
 	@GetMapping("/listar")
 	public List<Producto> listar(){
-		return productoService.findAll();
+		return productoService.findAll().stream().map(producto -> {
+			// comentado primer metodo te trer data de .propertis
+			//producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+			producto.setPort(port);
+			return producto;
+		}).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/ver/{id}")
 	public Producto detalle(@PathVariable Long id) {
+		Producto producto = productoService.findById(id);
+		// comentado primer metodo te trer data de .propertis
+		//producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
+		producto.setPort(port);
 		return productoService.findById(id);
 	}
 	
